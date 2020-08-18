@@ -40,6 +40,16 @@ Disable-UAC
 Write-TaskComplete
 
 # -----------------------------------------------------------------------------
+# - Ensure Chocolatey helper modules are imported -
+# -----------------------------------------------------------------------------
+# Boxstarter will install Chocolatey as part of this, but Chocolatey's helper
+#  modules are not made available immediately in the current PowerShell session.
+#  Manually import the module in so we can use them below.
+# See https://stackoverflow.com/a/46760714/2709150 for a more detailed explanation.
+$env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+
+# -----------------------------------------------------------------------------
 # - Configure Windows Explorer -
 # -----------------------------------------------------------------------------
 Write-TaskStart "Configure Windows Explorer with some sane options"
@@ -123,15 +133,13 @@ choco install -y visualstudio2019professional # TODO: Figure out which workloads
 choco install -y sql-server-management-studio
 choco install -y sqltoolbelt --package-parameters="/products: 'SQL Compare, SQL Data Compare, SQL Dependency Tracker, SQL Prompt, SQL Search'"
 choco install -y jetbrains-rider
-choco install -y resharper
-choco install -y dottrace
-choco install -y dotmemory
-choco install -y dotcover
-choco install -y dotpeek
+choco install -y resharper-ultimate-all --params="/PerMachine /NoCpp /NoTeamCityAddin"
 choco install -y insomnia-rest-api-client
 choco install -y fiddler
 choco install -y nodejs-lts
 Write-TaskComplete
+
+RefreshEnv # refresh environment variables, so we can resolve tools like npm, node, git, etc.
 
 # -----------------------------------------------------------------------------
 # - Configure Tools -
