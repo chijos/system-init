@@ -121,6 +121,7 @@ choco install -y sysinternals
 choco install -y beyondcompare
 choco install -y sharex
 choco install -y microsoft-windows-terminal
+choco install -y jetbrainsmono
 Write-TaskComplete
 
 # Dev Tools
