@@ -77,7 +77,7 @@ Set-ItemProperty `
 Set-CornerNavigationOptions -EnableUsePowerShellOnWinX
 
 # Set Taskbar options
-Set-BoxstarterTaskbarOptions -Size Small -Dock Left -Combine Always -AlwaysShowIconsOn -MultiMonitorOn -MultiMonitorMode All -MultiMonitorCombine Always
+#Set-BoxstarterTaskbarOptions -Size Small -Dock Left -Combine Always -AlwaysShowIconsOn -MultiMonitorOn -MultiMonitorMode All -MultiMonitorCombine Always
 
 Write-TaskComplete
 
