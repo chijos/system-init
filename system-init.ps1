@@ -72,6 +72,13 @@ Set-ItemProperty `
     -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' `
     -Name 'MMTaskbarMode' `
     -Value 2
+    
+# Win+X should launch PowerShell
+Set-CornerNavigationOptions -EnableUsePowerShellOnWinX
+
+# Set Taskbar options
+Set-BoxstarterTaskbarOptions -Size Small -Dock Left -Combine Always -AlwaysShowIconsOn -MultiMonitorOn -MultiMonitorMode All -MultiMonitorCombine Always
+
 Write-TaskComplete
 
 # -----------------------------------------------------------------------------
@@ -86,7 +93,8 @@ Write-TaskComplete
 # -----------------------------------------------------------------------------
 Write-TaskStart "Installing Ubuntu 20.04"
 # Install Ubuntu (Do this before Windows Terminal so it can auto-create a Ubuntu profile)
-Invoke-WebRequest -Uri 'https://aka.ms/wsl-ubuntu-2004' -OutFile Ubuntu.appx -UseBasicParsing
+# Find the URL to the distro appx file from here: https://docs.microsoft.com/en-us/windows/wsl/install-manual
+Invoke-WebRequest -Uri 'https://aka.ms/wslubuntu2004' -OutFile Ubuntu.appx -UseBasicParsing
 Add-AppxPackage .\Ubuntu.appx
 Remove-Item -Path .\Ubuntu.appx
 Write-TaskComplete
