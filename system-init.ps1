@@ -11,7 +11,7 @@ Function Get-ChocoInstalledStatus($packageName) {
 }
 
 Function Invoke-ChocoInstallCustomized($packageName, $packageArgs) {
-    If (Get-ChocoInstalledStatus $packageName) {
+    If ($(Get-ChocoInstalledStatus $packageName) -eq $true) {
         choco upgrade -y $packageName --package-parameters="$packageArgs"
     }
     Else {
@@ -20,7 +20,7 @@ Function Invoke-ChocoInstallCustomized($packageName, $packageArgs) {
 }
 
 Function Invoke-ChocoInstall($packageName) { 
-    If (Get-ChocoInstalledStatus $packageName) { choco upgrade -y $packageName }
+    If ($(Get-ChocoInstalledStatus $packageName) -eq $true) { choco upgrade -y $packageName }
     Else { choco install -y $packageName }
 }
 
