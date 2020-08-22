@@ -81,32 +81,37 @@ Set-ItemProperty `
 # - Enable Windows Features
 # -----------------------------------------------------------------------------
 "Installing Windows Subsystem for Linux"
-choco install -y wsl
+Invoke-ChocoInstall "wsl"
 "DONE!"
 
 # -----------------------------------------------------------------------------
 # - Installations -
 # -----------------------------------------------------------------------------
-"Installing Ubuntu 20.04"
-# Install Ubuntu (Do this before Windows Terminal so it can auto-create a Ubuntu profile)
-# Find the URL to the distro appx file from here: https://docs.microsoft.com/en-us/windows/wsl/install-manual
-Invoke-WebRequest -Uri 'https://aka.ms/wslubuntu2004' -OutFile Ubuntu.appx -UseBasicParsing
-Add-AppxPackage .\Ubuntu.appx
-Remove-Item -Path .\Ubuntu.appx
+If($(Get-AppxPackage -Name 'CanonicalGroupLimited.Ubuntu20.04onWindows').Count -ge 1) {
+    "Skipping Ubuntu install as 20.04 is already on the system"
+}
+Else {
+    "Installing Ubuntu 20.04"
+    # Install Ubuntu (Do this before Windows Terminal so it can auto-create a Ubuntu profile)
+    # Find the URL to the distro appx file from here: https://docs.microsoft.com/en-us/windows/wsl/install-manual
+    Invoke-WebRequest -Uri 'https://aka.ms/wslubuntu2004' -OutFile Ubuntu.appx -UseBasicParsing
+    Add-AppxPackage .\Ubuntu.appx
+    Remove-Item -Path .\Ubuntu.appx
+}
 "DONE!"
 
 # Utilities
 "Installing utilities"
 @(
-    "powershell-core" # Install before Windows Terminal so a PS Core profile gets auto-created
-    "notepadplusplus"
-    "microsoft-edge"
-    "7zip.install"
-    "powertoys"
-    "sysinternals"
-    "beyondcompare"
-    "sharex"
-    "microsoft-windows-terminal"
+    "powershell-core", # Install before Windows Terminal so a PS Core profile gets auto-created
+    "notepadplusplus",
+    "microsoft-edge",
+    "7zip.install",
+    "powertoys",
+    "sysinternals",
+    "beyondcompare",
+    "sharex",
+    "microsoft-windows-terminal",
     "jetbrainsmono"
 ) | ForEach-Object { Invoke-ChocoInstall $_ }
 "DONE!"
@@ -115,14 +120,14 @@ Remove-Item -Path .\Ubuntu.appx
 "Installing developer tools"
 Invoke-ChocoInstallCustomized "git" "/GitAndUnixToolsOnPath /WindowsTerminal /NoShellIntegration /SChannel"
 @(
-    "vscode"
-    "linqpad"
-    "rdmfree"
-    "visualstudio2019professional" # TODO: Figure out which workloads to install
-    "sql-server-management-studio"
-    "jetbrains-rider"
-    "insomnia-rest-api-client"
-    "fiddler"
+    "vscode",
+    "linqpad",
+    "rdmfree",
+    "visualstudio2019professional", # TODO: Figure out which workloads to install
+    "sql-server-management-studio",
+    "jetbrains-rider",
+    "insomnia-rest-api-client",
+    "fiddler",
     "nodejs-lts"
 ) | ForEach-Object { Invoke-ChocoInstall $_ }
 Invoke-ChocoInstallCustomized "sqltoolbelt" "/products: 'SQL Compare, SQL Data Compare, SQL Dependency Tracker, SQL Prompt, SQL Search'"
@@ -140,24 +145,6 @@ Ubuntu2004 run apt upgrade -y
 "DONE!"
 
 # -----------------------------------------------------------------------------
-# - Install VSCode extensions -
-# -----------------------------------------------------------------------------
-"Installing VSCode extensions"
-code --install-extension ms-dotnettools.csharp
-code --install-extension editorconfig.editorconfig
-code --install-extension github.github-vscode-theme
-code --install-extension ionide.ionide-fsharp
-code --install-extension ionide.ionide-paket
-code --install-extension davidanson.vscode-markdownlint
-code --install-extension pkief.material-icon-theme
-code --install-extension ms-vscode.powershell
-code --install-extension 2gua.rainbow-brackets
-code --install-extension mechatroner.rainbow-csv
-code --install-extension ms-vscode-remote.remote-wsl
-code --install-extension vscodevim.vim
-"DONE!"
-
-# -----------------------------------------------------------------------------
 # - TODO: Pull down any customized settings  -
 # -----------------------------------------------------------------------------
 # Git Config
@@ -165,12 +152,38 @@ code --install-extension vscodevim.vim
 # Windows Terminal
 
 # -----------------------------------------------------------------------------
+# - Install VSCode extensions -
+# -----------------------------------------------------------------------------
+#TODO: Can't use these until we VSCode config in place to disable strict SSL (ノಠ益ಠ)ノ彡┻━┻
+#"Installing VSCode extensions"
+#code --install-extension ms-dotnettools.csharp
+#code --install-extension editorconfig.editorconfig
+#code --install-extension github.github-vscode-theme
+#code --install-extension ionide.ionide-fsharp
+#code --install-extension ionide.ionide-paket
+#code --install-extension davidanson.vscode-markdownlint
+#code --install-extension pkief.material-icon-theme
+#code --install-extension ms-vscode.powershell
+#code --install-extension 2gua.rainbow-brackets
+#code --install-extension mechatroner.rainbow-csv
+#code --install-extension ms-vscode-remote.remote-wsl
+#code --install-extension vscodevim.vim
+#"DONE!"
+
+# -----------------------------------------------------------------------------
 # - Clone Source Code Repos -
 # -----------------------------------------------------------------------------
-"Clone source code repos"
-New-Item -Type Directory -Path 'C:\Source'
-cd 'C:\Source'
-git clone --recurse-submodules 'https://azd.orbis.app/tfs/Main/OPS/_git/ops-main'
+If ($(Test-Path -Path 'C:\Source\ops-main')) {
+    "ops-main is already cloned to C:\Source"
+}
+Else {
+    "Cloning ops-main to C:\Source"
+    If ($(Test-Path -Path 'C:\Source') -ne $true) {
+        New-Item -Type Directory -Path 'C:\Source'
+    }
+    cd 'C:\Source'
+    git clone --recurse-submodules 'https://azd.orbis.app/tfs/Main/OPS/_git/ops-main'
+}
 "DONE!"
 
 # -----------------------------------------------------------------------------
