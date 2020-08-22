@@ -131,7 +131,7 @@ Invoke-ChocoInstallCustomized "git" "/GitAndUnixToolsOnPath /WindowsTerminal /No
     "nodejs-lts"
 ) | ForEach-Object { Invoke-ChocoInstall $_ }
 Invoke-ChocoInstallCustomized "sqltoolbelt" "/products: SQL Compare, SQL Data Compare, SQL Dependency Tracker, SQL Prompt, SQL Search"
-Invoke-ChocoInstallCustomized "resharper-ultimate-all" "/PerMachine /NoCpp /NoTeamCityAddin"
+Invoke-ChocoInstallCustomized "resharper-ultimate-all" "'/PerMachine /NoCpp /NoTeamCityAddin'"
 "DONE!"
 
 # -----------------------------------------------------------------------------
